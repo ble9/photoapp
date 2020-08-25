@@ -54,6 +54,8 @@ var formKey = GlobalKey<FormState>;
                   'Sign In',
                   style: TextStyle(fontSize: 20.0, color: Colors.white),
                 ),
+                color:Colors.blue,
+                onPressed: con.signIn,
               )
             ],
           ),
@@ -68,4 +70,6 @@ var formKey = GlobalKey<FormState>;
 class _Controller {
   _SignInState _state;
   _Controller(this._state);
+
+  void si
 }
