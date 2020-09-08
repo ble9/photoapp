@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:photomemo/controller/firebasecontroller.dart';
 
 class SignInScreen extends StatefulWidget {
   static const routeName = '/signInScreen';
@@ -13,7 +14,8 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInState extends State<SignInScreen> {
   _Controller con;
-var formKey = GlobalKey<FormState>;
+  var formKey = GlobalKey <FormState>();
+
   @override
   void initState() {
     super.initState();
@@ -23,53 +25,94 @@ var formKey = GlobalKey<FormState>;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Sign In'),
-      ),
-      body: SingleChildScrollView(
-        child: Form(
-          key: formKey,
-          child: Column(
-            children: <Widget>[
-              TextFormField(
-                decoration: InputDecoration(
-                hintText: 'Email',
+        appBar: AppBar(
+          title: Text('Sign In'),
+        ),
+        body: SingleChildScrollView(
+            child: Form(
+              key: formKey,
+              child: Column(
+                children: <Widget>[
+                  TextFormField(
+                    decoration: InputDecoration(
+                      hintText: 'Email',
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                    autocorrect: false,
+                    validator: con.validatorEmail,
+                    onSaved: con.onSavedEmail,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      hintText: 'password',
+                    ),
+                    autocorrect: false,
+                    obscureText: true,
+                    validator: con.validatorPassword,
+                    onSaved: con.onSavedPassword,
+                  ),
+                  RaisedButton(
+                    child: Text(
+                      'Sign In',
+                      style: TextStyle(fontSize: 20.0, color: Colors.white),
+                    ),
+                    color: Colors.blue,
+                    onPressed: con.signIn,
+                  )
+                ],
               ),
-              keyboardType:TextInputType.emailAddress,
-              autocorrect: false,
-              validator: con.validatorEmail,
-              onSaved: con.onSavedEmail,
-              ),
-          TextFormField(
-             decoration: InputDecoration(
-                hintText: 'password',
-              ),
-              autocorrect: false,
-              obscureText: true,
-              validator: con.validatorPassword,
-              onSaved: con.onSavedPassword,
-              ),
-              RaisedButton(
-                child: Text(
-                  'Sign In',
-                  style: TextStyle(fontSize: 20.0, color: Colors.white),
-                ),
-                color:Colors.blue,
-                onPressed: con.signIn,
-              )
-            ],
-          ),
-
+            )
         )
-    )
-      )
     );
   }
+
 }
 
 class _Controller {
   _SignInState _state;
+
   _Controller(this._state);
 
-  void si
+  String email;
+  String password;
+
+  void signIn() async{
+    if (!_state.formKey.currentState.validate()) {
+      return;
+    }
+    _state.formKey.currentState.save();
+
+    print(' ======= email:$email   password : $password');
+    try{
+      var user = await FirebaseController.signIn(email, password);
+      print('USER: $user');
+
+    }catch(e){
+      print(' ** $e');
+    }
+  }
+
+  String validatorEmail(String value) {
+    if (value == null || !value.contains('@') || !value.contains('.')) {
+      return 'not valid email';
+    } else {
+      return null;
+    }
+  }
+
+  void onSavedEmail(String value) {
+    email = value;
+  }
+
+  String validatorPassword(String value) {
+    if (value == null || value.length < 6) {
+      return ' min 6 char';
+    } else {
+      return null;
+    }
+  }
+
+  void onSavedPassword(String value) {
+    password = value;
+  }
 }

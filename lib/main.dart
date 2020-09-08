@@ -12,8 +12,8 @@ class PhotoMemoApp extends StatelessWidget {
       initialRoute: SignInScreen.routeName,
       routes: {
         SignInScreen.routeName: (context) => SignInScreen(),
-        HomeScreen.routeName: (context) => HomeScreen(),
-        AddScreen.routeName: (context) => AddScreen(),
+//        HomeScreen.routeName: (context) => HomeScreen(),
+//        AddScreen.routeName: (context) => AddScreen(),
       },
     );
   }
