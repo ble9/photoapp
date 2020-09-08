@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "983642000671",
+    "firebase_url": "https://brian-map2020-photomemo.firebaseio.com",
+    "project_id": "brian-map2020-photomemo",
+    "storage_bucket": "brian-map2020-photomemo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:983642000671:android:de05cf889358127227342a",
+        "android_client_info": {
+          "package_name": "edu.uco.ble9.map2020.photomemo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "983642000671-uec2v58gjmrgpjs8sh8cbr9k662qb5go.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsxG0vrVWW_-G4qxGVki39EVRhfz6CYqE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "983642000671-uec2v58gjmrgpjs8sh8cbr9k662qb5go.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
