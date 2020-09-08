@@ -33,6 +33,21 @@ class _SignInState extends State<SignInScreen> {
               key: formKey,
               child: Column(
                 children: <Widget>[
+                  Image.asset('assets/images/postit.jpg'),
+                  Positioned(
+                    top: 50.0,
+                    left: 16.0,
+                    child: Text(
+                      'PhotoMemo',
+                  style: TextStyle(
+                    color:Colors.blue[700],
+                  fontSize: 25.0,
+                  fontFamily: 'IndieFlower',
+                  ),
+                  ),
+                  ),
+                  ],
+              ),
                   TextFormField(
                     decoration: InputDecoration(
                       hintText: 'Email',
@@ -76,21 +91,26 @@ class _Controller {
   String email;
   String password;
 
-  void signIn() async{
+  void signIn() async {
     if (!_state.formKey.currentState.validate()) {
       return;
     }
     _state.formKey.currentState.save();
 
-    print(' ======= email:$email   password : $password');
-    try{
+    try {
       var user = await FirebaseController.signIn(email, password);
       print('USER: $user');
+    } catch (e) {
+      MyDialog.info(
+        content: _state.context,
+        title: 'Sign In Error',
+        content: e.message ?? e.toString(),
+      );
 
-    }catch(e){
-      print(' ** $e');
+      return;
     }
   }
+
 
   String validatorEmail(String value) {
     if (value == null || !value.contains('@') || !value.contains('.')) {
