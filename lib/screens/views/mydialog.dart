@@ -1,20 +1,22 @@
-class MyDialog{
-  statics void info ({Buildcontext context, String title, String content}){
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+class MyDialog {
+  static void info({BuildContext context, String title, String content}) {
     showDialog(
-      barrierDismissable:false,
-      context: context,
-    builder: (context){
-        return AlertDialog(
-        title: Text(title),
-        content:Text(content).
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(title),
+            content: Text(content),
             actions: <Widget>[
-              FlatButton)
-              child: Text('OK'),
-              onPressed:() => Navigator.of(context).pop(),
-      ),
-    ],
-        );
-    }
-    );
+              FlatButton(
+                child: Text('OK'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          );
+        });
   }
 }

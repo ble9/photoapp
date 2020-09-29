@@ -1,7 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:photomemo/controller/firebasecontroller.dart';
+import 'package:photomemo/model/photomemo.dart';
+import 'package:photomemo/screens/home_screen.dart';
+import 'package:photomemo/screens/views/mydialog.dart';
 
 class SignInScreen extends StatefulWidget {
   static const routeName = '/signInScreen';
@@ -14,7 +18,7 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInState extends State<SignInScreen> {
   _Controller con;
-  var formKey = GlobalKey <FormState>();
+  var formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -30,57 +34,56 @@ class _SignInState extends State<SignInScreen> {
         ),
         body: SingleChildScrollView(
             child: Form(
-              key: formKey,
-              child: Column(
+          key: formKey,
+          child: Column(
+            children: <Widget>[
+              Stack(
                 children: <Widget>[
-                  Image.asset('assets/images/postit.jpg'),
+                  Image.asset('assets/images/greennote.png'),
                   Positioned(
                     top: 50.0,
                     left: 16.0,
                     child: Text(
                       'PhotoMemo',
-                  style: TextStyle(
-                    color:Colors.blue[700],
-                  fontSize: 25.0,
-                  fontFamily: 'IndieFlower',
-                  ),
-                  ),
-                  ),
-                  ],
-              ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      hintText: 'Email',
+                      style: TextStyle(
+                        color: Colors.blue[700],
+                        fontSize: 25.0,
+                        fontFamily: 'IndieFlower',
+                      ),
                     ),
-                    keyboardType: TextInputType.emailAddress,
-                    autocorrect: false,
-                    validator: con.validatorEmail,
-                    onSaved: con.onSavedEmail,
                   ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      hintText: 'password',
-                    ),
-                    autocorrect: false,
-                    obscureText: true,
-                    validator: con.validatorPassword,
-                    onSaved: con.onSavedPassword,
-                  ),
-                  RaisedButton(
-                    child: Text(
-                      'Sign In',
-                      style: TextStyle(fontSize: 20.0, color: Colors.white),
-                    ),
-                    color: Colors.blue,
-                    onPressed: con.signIn,
-                  )
                 ],
               ),
-            )
-        )
-    );
+              TextFormField(
+                decoration: InputDecoration(
+                  hintText: 'Email',
+                ),
+                keyboardType: TextInputType.emailAddress,
+                autocorrect: false,
+                validator: con.validatorEmail,
+                onSaved: con.onSavedEmail,
+              ),
+              TextFormField(
+                decoration: InputDecoration(
+                  hintText: 'password',
+                ),
+                autocorrect: false,
+                obscureText: true,
+                validator: con.validatorPassword,
+                onSaved: con.onSavedPassword,
+              ),
+              RaisedButton(
+                child: Text(
+                  'Sign In',
+                  style: TextStyle(fontSize: 20.0, color: Colors.white),
+                ),
+                color: Colors.blue,
+                onPressed: con.signIn,
+              ),
+            ],
+          ),
+        )));
   }
-
 }
 
 class _Controller {
@@ -96,21 +99,31 @@ class _Controller {
       return;
     }
     _state.formKey.currentState.save();
-
+      FirebaseUser user;
     try {
-      var user = await FirebaseController.signIn(email, password);
+      user = await FirebaseController.signIn(email, password);
       print('USER: $user');
     } catch (e) {
       MyDialog.info(
-        content: _state.context,
+        context: _state.context,
         title: 'Sign In Error',
         content: e.message ?? e.toString(),
       );
-
       return;
     }
-  }
+    try {
+      List<PhotoMemo> photoMemos = await FirebaseController.getPhotoMemos(email);
+      Navigator.pushNamed(_state.context, HomeScreen.routeName,
+          arguments: {'user': user, 'photoMemoList':photoMemos});
+    } catch (e){
+      MyDialog.info(
+        context: _state.context,
+        title: 'Firebase/Firestore error',
+        content: 'DONT WORK TRY AGAIN LATER',
 
+      )
+    }
+  }
 
   String validatorEmail(String value) {
     if (value == null || !value.contains('@') || !value.contains('.')) {
