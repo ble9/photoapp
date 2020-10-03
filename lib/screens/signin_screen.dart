@@ -47,7 +47,7 @@ class _SignInState extends State<SignInScreen> {
                       'PhotoMemo',
                       style: TextStyle(
                         color: Colors.blue[700],
-                        fontSize: 25.0,
+                        fontSize: 70.0,
                         fontFamily: 'IndieFlower',
                       ),
                     ),
@@ -98,12 +98,19 @@ class _Controller {
     if (!_state.formKey.currentState.validate()) {
       return;
     }
+//    print('email:$email password :$password');
     _state.formKey.currentState.save();
-      FirebaseUser user;
+
+    MyDialog.circularProgressStart(_state.context);
+
+    FirebaseUser user;
     try {
-      user = await FirebaseController.signIn(email, password);
+       user = await FirebaseController.signIn(email, password);
       print('USER: $user');
     } catch (e) {
+
+         MyDialog.circularProgressEnd(_state.context);
+
       MyDialog.info(
         context: _state.context,
         title: 'Sign In Error',
@@ -111,18 +118,23 @@ class _Controller {
       );
       return;
     }
+     //sigin succeded
+     //1.read all photomemo's from firebase
     try {
-      List<PhotoMemo> photoMemos = await FirebaseController.getPhotoMemos(email);
-      Navigator.pushNamed(_state.context, HomeScreen.routeName,
-          arguments: {'user': user, 'photoMemoList':photoMemos});
-    } catch (e){
+      List<PhotoMemo> photoMemos = await FirebaseController.getPhotoMemos(user.email);
+
+      Navigator.pushReplacementNamed(_state.context, HomeScreen.routeName,
+      arguments: {'user': user, 'photoMemoList':photoMemos, } );
+
+    } catch (e)  {
+      MyDialog.circularProgressEnd(_state.context);
       MyDialog.info(
         context: _state.context,
-        title: 'Firebase/Firestore error',
-        content: 'DONT WORK TRY AGAIN LATER',
-
-      )
+        title: 'Firestore/Firebase error',
+        content: ' Cannot get photo memo document. Try again later!\n ${e.message} '
+      );
     }
+
   }
 
   String validatorEmail(String value) {
@@ -139,7 +151,7 @@ class _Controller {
 
   String validatorPassword(String value) {
     if (value == null || value.length < 6) {
-      return ' min 6 char';
+      return ' password min 6 char';
     } else {
       return null;
     }
