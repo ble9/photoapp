@@ -57,7 +57,7 @@ class _HomeState extends State<HomeScreen> {
               ListTile(
                 leading: Icon(Icons.exit_to_app),
                 title: Text('Sign out'),
-                onTap: (){},
+                onTap: con.signOut,
               ),
             ],
           )

@@ -114,7 +114,7 @@ class _AddState extends State<AddScreen> {
               ),
               TextFormField(
                 decoration: InputDecoration(
-                  hintText: 'memo',
+                  hintText: 'Memo',
                 ),
                 autocorrect: true,
                 keyboardType: TextInputType.multiline,
@@ -124,9 +124,9 @@ class _AddState extends State<AddScreen> {
               ),
               TextFormField(
                 decoration: InputDecoration(
-                  hintText: 'SharedWith( comma seperated email list)',
+                  hintText: 'Shared With( comma seperated email list)',
                 ),
-                autocorrect: true,
+                autocorrect: false,
                 keyboardType: TextInputType.multiline,
                 maxLines: 3,
                 validator: con.validatorSharedWith,
@@ -142,7 +142,6 @@ class _AddState extends State<AddScreen> {
 
 class _Controller {
   _AddState _state;
-
   _Controller(this._state);
 
   String memo;
@@ -155,8 +154,11 @@ class _Controller {
       return;
     }
     _state.formKey.currentState.save();
-
-    try {
+  print ('================');
+  print(title);
+  print(memo);
+  print(sharedWith.toString());
+  try {
       MyDialog.circularProgressStart(_state.context);
     //1. upload pic
       Map<String, String> photoInfo = await FirebaseController.uploadStorage(
@@ -246,23 +248,19 @@ class _Controller {
   }
 
   String validatorSharedWith(String value) {
-    if (value == null || value
-        .trim()
-        .length == 0) return null;
+    if (value == null || value.trim().length == 0) return null;
+
     List<String> emailList = value.split(',').map((e) => e.trim()).toList();
     for (String email in emailList) {
-      if (email.contains('@') && email.contains(','))
+      if (email.contains('@') && email.contains('.'))
         continue;
-      else
-        return 'Comma (,) Seperated email list';
+      else return 'Comma(,) Seperated Email List';
     }
     return null;
   }
 
   void onSavedSharedWith(String value) {
-    if (value
-        .trim()
-        .length != 0) {
+    if (value.trim().length != 0) {
       this.sharedWith = value.split(',').map((e) => e.trim()).toList();
     }
   }
