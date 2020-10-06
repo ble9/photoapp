@@ -13,12 +13,7 @@
           "package_name": "edu.uco.ble9.map2020.photomemo"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "983642000671-uec2v58gjmrgpjs8sh8cbr9k662qb5go.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
           "current_key": "AIzaSyCsxG0vrVWW_-G4qxGVki39EVRhfz6CYqE"
@@ -26,12 +21,7 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "983642000671-uec2v58gjmrgpjs8sh8cbr9k662qb5go.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

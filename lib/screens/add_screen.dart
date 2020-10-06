@@ -1,6 +1,6 @@
 import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:photomemo/controller/firebasecontroller.dart';
@@ -8,8 +8,7 @@ import 'package:photomemo/model/photomemo.dart';
 import 'package:photomemo/screens/views/mydialog.dart';
 
 class AddScreen extends StatefulWidget {
-  static const routeName = '/home/addscreen';
-
+  static const routeName = '/homeScreen/addScreen';
   @override
   State<StatefulWidget> createState() {
     return _AddState();
@@ -33,20 +32,18 @@ class _AddState extends State<AddScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Map args = ModalRoute
-        .of(context)
-        .settings
-        .arguments;
-    user ??= args ['user'];
+    Map args = ModalRoute.of(context).settings.arguments;
+    user ??= args['user'];
     photoMemos ??= args['photoMemoList'];
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('add new photo memo'),
+        title: Text('Add New Photo Memo'),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.check),
             onPressed: con.save,
-          )
+          ),
         ],
       ),
       body: Form(
@@ -57,12 +54,9 @@ class _AddState extends State<AddScreen> {
               Stack(
                 children: <Widget>[
                   Container(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width,
+                    width: MediaQuery.of(context).size.width,
                     child: image == null
-                        ? Icon(Icons.photo_library, size: 300.0)
+                        ? Icon(Icons.photo_library,size: 300.0,)
                         : Image.file(image, fit: BoxFit.fill),
                   ),
                   Positioned(
@@ -72,9 +66,9 @@ class _AddState extends State<AddScreen> {
                       color: Colors.blue[200],
                       child: PopupMenuButton<String>(
                         onSelected: con.getPicture,
-                        itemBuilder: (context) =>
-                        <PopupMenuEntry<String>>[
-                          PopupMenuItem(value: 'camera',
+                        itemBuilder: (context) => <PopupMenuEntry<String>>[
+                          PopupMenuItem(
+                            value: 'camera',
                             child: Row(
                               children: <Widget>[
                                 Icon(Icons.photo_camera),
@@ -82,7 +76,8 @@ class _AddState extends State<AddScreen> {
                               ],
                             ),
                           ),
-                          PopupMenuItem(value: 'gallery',
+                          PopupMenuItem(
+                            value: 'gallery',
                             child: Row(
                               children: <Widget>[
                                 Icon(Icons.photo_album),
@@ -124,7 +119,7 @@ class _AddState extends State<AddScreen> {
               ),
               TextFormField(
                 decoration: InputDecoration(
-                  hintText: 'Shared With( comma seperated email list)',
+                  hintText: 'Shared With (comma separated email list)',
                 ),
                 autocorrect: false,
                 keyboardType: TextInputType.multiline,
@@ -143,9 +138,8 @@ class _AddState extends State<AddScreen> {
 class _Controller {
   _AddState _state;
   _Controller(this._state);
-
-  String memo;
   String title;
+  String memo;
   List<String> sharedWith = [];
   String uploadProgressMessage;
 
@@ -154,31 +148,29 @@ class _Controller {
       return;
     }
     _state.formKey.currentState.save();
-  print ('================');
-  print(title);
-  print(memo);
-  print(sharedWith.toString());
-  try {
+
+    try {
       MyDialog.circularProgressStart(_state.context);
-    //1. upload pic
+
+      //1. upload pic to Storage
       Map<String, String> photoInfo = await FirebaseController.uploadStorage(
-          image: _state.image,
-          uid: _state.user.uid,
-          sharedWith: sharedWith,
-          listener: (double progressPercentage)  {
-            _state.render((){
-              uploadProgressMessage = 'Uploading : ${progressPercentage.toStringAsFixed(1)}';
-            });
-          }
+        image: _state.image,
+        uid: _state.user.uid,
+        sharedWith: sharedWith,
+        listener: (double progressPercentage) {
+          _state.render(() {
+            uploadProgressMessage = 'Uploading: ${progressPercentage.toStringAsFixed(1)} %';
+          });
+        },
       );
-          //2 get image leb by mlkit
-      _state.render(() => uploadProgressMessage = 'ml image labeler start');
 
-      List <String> labels =
-      await FirebaseController.getImageLabels(_state.image);
-      print('****labels: ' + labels.toString());
+      //2. get image  by ML kit
+      _state.render(() => uploadProgressMessage = 'ML Image Labeler started!');
+      List<String> labels =
+      await FirebaseController.getImageLables(_state.image);
+      print('********labels:' + labels.toString());
 
-
+      //3. save photomemodoc to firestore
       var p = PhotoMemo(
         title: title,
         memo: memo,
@@ -190,17 +182,17 @@ class _Controller {
         imageLabels: labels,
       );
 
-      p.docId = await FirebaseController.addPhotoMemo(p);
+      p.docID = await FirebaseController.addPhotomemo(p);
       _state.photoMemos.insert(0, p);
 
       MyDialog.circularProgressEnd(_state.context);
-
       Navigator.pop(_state.context);
     } catch (e) {
+      MyDialog.circularProgressEnd(_state.context);
       MyDialog.info(
-          context: _state.context,
-          title: 'Firebase error',
-          content: e.message ?? e.toString(),
+        context: _state.context,
+        title: 'Firebase Error',
+        content: e.message ?? e.toString(),
       );
     }
   }
@@ -220,10 +212,8 @@ class _Controller {
   }
 
   String validatorTitle(String value) {
-    if (value == null || value
-        .trim()
-        .length < 2) {
-      return 'min 2 char';
+    if (value == null || value.trim().length < 2) {
+      return 'min 2 chars';
     } else {
       return null;
     }
@@ -234,10 +224,8 @@ class _Controller {
   }
 
   String validatorMemo(String value) {
-    if (value == null || value
-        .trim()
-        .length < 3) {
-      return 'min 3 char';
+    if (value == null || value.trim().length < 3) {
+      return 'min 3 chars';
     } else {
       return null;
     }
@@ -252,9 +240,10 @@ class _Controller {
 
     List<String> emailList = value.split(',').map((e) => e.trim()).toList();
     for (String email in emailList) {
-      if (email.contains('@') && email.contains('.'))
+      if (email.contains('e') && email.contains('.'))
         continue;
-      else return 'Comma(,) Seperated Email List';
+      else
+        return 'Comma(,) separated email list';
     }
     return null;
   }
