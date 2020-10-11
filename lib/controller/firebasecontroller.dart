@@ -123,18 +123,17 @@ class FirebaseController {
 
   static Future<List<PhotoMemo>> getPhotoMemosSharedWithMe(String email) async {
     QuerySnapshot querySnapshot = await Firestore.instance
-        .collection(PhotoMemo.COLLECTION)
-        .where(PhotoMemo.SHARED_WITH, arrayContains: email)
-        .orderBy(PhotoMemo.UPDATED_AT, descending: true)
-        .getDocuments();
+    .collection(PhotoMemo.COLLECTION)
+    .where(PhotoMemo.SHARED_WITH, arrayContains: email)
+    .orderBy(PhotoMemo.UPDATED_AT, descending: true)
+    .getDocuments();
 
     var result = <PhotoMemo>[];
-    if (querySnapshot != null && querySnapshot.documents.length != 0) {
-      for (var doc in querySnapshot.documents) {
+    if (querySnapshot != null && querySnapshot.documents.length !=0) {
+      for (var doc in querySnapshot.documents){
         result.add(PhotoMemo.deserialize(doc.data, doc.documentID));
       }
     }
-
     return result;
   }
 

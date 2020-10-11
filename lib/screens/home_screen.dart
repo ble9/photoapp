@@ -160,17 +160,14 @@ void settings() async{
 
     void sharedWith() async {
       try{
-      List <PhotoMemo> sharedPhotosMemos =
-      await FirebaseController.getPhotoMemosSharedWithMe(_state.user.email);
-      print (sharedPhotosMemos.toString());
-      await Navigator.pushNamed(_state.context ,SharedWithScreen.routeName,
-          arguments:{
-              'user': _state.user,
-                'sharedPhotoMemoList': sharedPhotosMemos
-          });
+        List<PhotoMemo> sharedPhotoMemos =
+        await FirebaseController.getPhotoMemosSharedWithMe(_state.user.email);
 
-      Navigator.pop(_state.context); // close the drawer
-    } catch (e) {}
+        await Navigator.pushNamed(_state.context, SharedWithScreen.routeName,
+        arguments: {'user':_state.user, 'sharedPhotoMemoList':sharedPhotoMemos});
+    } catch (e) {
+
+      }
 }
 
   void onLongPress(int index) {

@@ -25,22 +25,20 @@ class _SharedWithState extends State<SharedWithScreen> {
   @override
   Widget build(BuildContext context) {
     Map arg = ModalRoute.of(context).settings.arguments;
-    photoMemos ??= arg['photoMemoList'];
-
+    photoMemos ??= arg ['sharedPhotoMemoList'];
     return Scaffold(
       appBar: AppBar(
         title: Text('Shared With me'),
+
       ),
       body: photoMemos.length == 0
           ? Text(
               'No PhotoMemos shared with me',
               style: TextStyle(fontSize: 20),
             )
-//
           : ListView.builder(
               itemCount: photoMemos.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
+              itemBuilder: (BuildContext context, int index)  => Container(
                   padding: EdgeInsets.fromLTRB(5.0,5.0, 2.0, 5.0),
                   child: Card(
                     elevation: 7.0,
@@ -78,12 +76,12 @@ class _SharedWithState extends State<SharedWithScreen> {
                     ],
                   ),
                   ),
-                );
-              }),
+                ),
+              ),
     );
   }
 }
-
+//
 class _Controller {
   _SharedWithState _state;
 

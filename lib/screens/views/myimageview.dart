@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-//profile pic borken
+
+
+
 class MyImageView{
   static CachedNetworkImage network (
   {@required String imageUrl, @required BuildContext context}) =>
