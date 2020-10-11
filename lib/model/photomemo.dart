@@ -2,6 +2,7 @@ class PhotoMemo {
   //field name for Firestore documents
   static const COLLECTION = 'photoMemos';
   static const IMAGE_FOLDER = 'photoMemoPictures';
+  static const PROFILE_FOLDER  = 'profilePictures';
   static const TITLE = 'title';
   static const MEMO = 'memo';
   static const CREATED_BY = 'createdBy';
